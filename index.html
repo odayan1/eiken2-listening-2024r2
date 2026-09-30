@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英検2級 リスニングマスター 30問｜KATEぷら</title>
+<style>
+:root{
+  --sky:#2fbdea; --green:#8dc63f; --yellow:#f7d000;
+  --ink:#2b3a42; --bg:#f4fafd; --card:#ffffff;
+  --ng:#e74c3c; --ok:#27ae60; --purple:#7a4dbf;
+}
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+body{font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic',Meiryo,sans-serif; background:var(--bg); color:var(--ink); min-height:100vh;}
+.wrap{max-width:640px; margin:0 auto; padding:16px;}
+header{background:linear-gradient(135deg,var(--sky),#1fa9d6); color:#fff; padding:14px 16px; border-radius:0 0 18px 18px;}
+header .brand{font-size:12px; opacity:.9; letter-spacing:.08em;}
+header h1{font-size:20px; margin-top:2px;}
+header .sub{font-size:12px; opacity:.85; margin-top:2px;}
+.card{background:var(--card); border-radius:16px; padding:20px; box-shadow:0 3px 14px rgba(43,58,66,.08); margin-bottom:14px;}
+.btn{display:block; width:100%; padding:14px; border:none; border-radius:12px; font-size:16px; font-weight:bold; cursor:pointer; transition:.15s; background:var(--sky); color:#fff;}
+.btn:active{transform:scale(.98);}
+.btn.green{background:var(--green);}
+.btn.ghost{background:#eef5f9; color:var(--ink);}
+.btn:disabled{opacity:.45; cursor:default;}
+.partbtn{display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left; margin-bottom:10px;}
+.partbtn small{font-weight:normal; font-size:12px; opacity:.9;}
+.partbtn.p2{background:var(--purple);}
+.partbtn.all{background:var(--green);}
+.dots{display:flex; gap:4px; justify-content:center; margin-bottom:12px; flex-wrap:wrap;}
+.dot{width:9px; height:9px; border-radius:50%; background:#d5e5ee; transition:.2s;}
+.dot.cur{background:var(--sky); transform:scale(1.3);}
+.dot.hit{background:var(--green);}
+.dot.miss{background:var(--ng);}
+.scorebar{display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:bold; color:#5a7484; margin-bottom:10px;}
+.scorebar .pt{color:var(--sky); font-size:16px;}
+.tora{background:#fffbe8; border:1.5px solid var(--yellow); border-radius:12px; padding:12px 14px; margin:10px 0; font-size:13px; line-height:1.65;}
+.tora .tora-title{font-weight:bold; color:#8a7100; margin-bottom:4px;}
+.choices{display:flex; flex-direction:column; gap:8px; margin-top:12px;}
+.choice{padding:12px 14px; border:2px solid #dfeef5; border-radius:12px; background:#fff; font-size:14px; text-align:left; cursor:pointer; transition:.15s; width:100%;}
+.choice:not(:disabled):active{border-color:var(--sky);}
+.choice.sel-ok{border-color:var(--ok); background:#eafaf0; font-weight:bold;}
+.choice.sel-ng{border-color:var(--ng); background:#fdeeec;}
+.choice.reveal-ok{border-color:var(--ok); background:#eafaf0;}
+.choice:disabled{cursor:default; opacity:.9;}
+.timerwrap{height:10px; background:#e3eef5; border-radius:999px; overflow:hidden; margin:12px 0 4px;}
+.timerbar{height:100%; width:100%; background:linear-gradient(90deg,var(--green),var(--yellow),var(--ng)); transition:width .1s linear;}
+.timertext{font-size:12px; color:#7b93a0; text-align:center; margin-bottom:6px;}
+.playbtn{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:16px; border:none; border-radius:14px; background:linear-gradient(135deg,var(--sky),#1fa9d6); color:#fff; font-size:17px; font-weight:bold; cursor:pointer; box-shadow:0 4px 12px rgba(47,189,234,.35);}
+.playbtn:disabled{opacity:.5; box-shadow:none;}
+.audiowarn{display:none; background:#fdeeec; border:1.5px solid var(--ng); color:#a33; border-radius:10px; padding:10px 12px; font-size:12.5px; margin-top:10px; line-height:1.6;}
+.audiowarn.show{display:block;}
+.scenechip{display:inline-block; background:#e9f2fb; color:#3a6ea5; font-size:12px; font-weight:bold; padding:4px 12px; border-radius:999px; margin-bottom:8px;}
+.qtext{font-size:16px; font-weight:bold; margin:8px 0 2px;}
+.feedback{font-size:20px; font-weight:bold; margin:12px 0 6px; text-align:center;}
+.feedback.ok{color:var(--ok);}
+.feedback.ng{color:var(--ng);}
+.expl{background:#f4f8fb; border-radius:12px; padding:12px 14px; font-size:13.5px; line-height:1.7; margin-top:10px;}
+.expl .wana-title{font-weight:bold; color:var(--ng); margin-bottom:3px;}
+.replay{margin-top:12px; background:#eef7fc; border:1.5px solid #b9e0f2; border-radius:12px; padding:12px 14px;}
+.replay-head{font-weight:bold; font-size:14px; color:#1f7a9c; margin-bottom:8px;}
+.replay-full{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:12px; border:none; border-radius:10px; background:linear-gradient(135deg,var(--sky),#1fa9d6); color:#fff; font-size:15px; font-weight:bold; cursor:pointer; margin-bottom:10px;}
+.replay-sub{font-size:12px; color:#5a7484; margin-bottom:8px;}
+.seg-row{display:flex; align-items:flex-start; gap:8px; padding:6px 0; border-top:1px dashed #cfe6f2;}
+.seg-play{flex:0 0 auto; width:34px; height:34px; border:none; border-radius:50%; background:#2fbdea; color:#fff; font-size:14px; cursor:pointer;}
+.seg-play.playing{background:#1f7a4d;}
+.seg-play:active{transform:scale(.94);}
+.seg-lbl{flex:0 0 auto; font-size:11px; font-weight:bold; color:#fff; border-radius:6px; padding:2px 7px; margin-top:6px;}
+.seg-lbl.m{background:#3a6ea5;} .seg-lbl.w{background:#c2679b;} .seg-lbl.n{background:#7a4dbf;}
+.seg-txt{flex:1; font-size:13px; line-height:1.6; padding-top:4px;}
+.hunter{margin-top:14px;}
+.hunter-head{font-weight:bold; font-size:14px; margin-bottom:4px; color:var(--purple);}
+.hunter-sub{font-size:12px; color:#7b93a0; margin-bottom:10px; line-height:1.6;}
+.script-box{background:#fff; border:2px solid #e3d9f5; border-radius:12px; padding:12px 14px; line-height:2.05; font-size:14.5px;}
+.script-line{margin-bottom:6px;}
+.spk{display:inline-block; font-size:11px; font-weight:bold; color:#fff; border-radius:6px; padding:1px 7px; margin-right:6px; vertical-align:1px;}
+.spk.m{background:#3a6ea5;} .spk.w{background:#c2679b;}
+.w{cursor:pointer; border-radius:4px; padding:1px 1px; transition:.15s;}
+.w.miss-flash{background:#fdd;}
+.w.found-shift{background:rgba(31,122,77,.2); border-bottom:2.5px solid #1f7a4d; font-weight:bold;}
+.w.found-link{background:rgba(214,69,69,.16); border-bottom:2.5px solid #d64545; font-weight:bold;}
+.w.found-vocab{background:rgba(122,77,191,.16); border-bottom:2.5px solid var(--purple); font-weight:bold;}
+.hunter-status{font-size:13px; font-weight:bold; color:var(--purple); margin:8px 0;}
+.signnotes{margin-top:8px;}
+.signnote{display:none; font-size:12.5px; background:#faf7ff; border-left:3px solid var(--purple); padding:7px 10px; margin-bottom:6px; border-radius:0 8px 8px 0; line-height:1.6;}
+.signnote.shown{display:block;}
+.signnote b.k-shift{color:#1f7a4d;} .signnote b.k-link{color:#d64545;} .signnote b.k-vocab{color:var(--purple);}
+.legend{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; font-size:11px;}
+.legend span{padding:2px 9px; border-radius:999px; color:#fff;}
+.legend .lg-shift{background:#1f7a4d;} .legend .lg-link{background:#d64545;} .legend .lg-vocab{background:var(--purple);}
+.result-score{text-align:center; margin:10px 0;}
+.result-score .big{font-size:46px; font-weight:bold; color:var(--sky);}
+.result-score .big.gold{color:#c9a227; text-shadow:0 0 12px rgba(201,162,39,.5);}
+.result-label{text-align:center; font-size:22px; font-weight:bold; margin-bottom:8px;}
+.result-label.pass{color:var(--ok);} .result-label.sclass{color:#c9a227;} .result-label.fail{color:#7b93a0;}
+.passline{position:relative; height:14px; background:#e3eef5; border-radius:999px; margin:14px 0 26px;}
+.passline .fill{height:100%; border-radius:999px; background:linear-gradient(90deg,var(--sky),var(--green)); transition:width 1s ease;}
+.passline .mark{position:absolute; top:-4px; width:2.5px; height:22px; background:#8a7100;}
+.passline .mark-label{position:absolute; top:24px; font-size:10.5px; color:#8a7100; transform:translateX(-50%); white-space:nowrap;}
+.wrong-review{margin-top:14px;}
+.wrong-review h3{font-size:14.5px; margin-bottom:8px; color:var(--ng);}
+.wrong-item{background:#fdf6f5; border-radius:10px; padding:10px 12px; font-size:12.5px; margin-bottom:8px; line-height:1.65;}
+footer{text-align:center; font-size:11px; color:#9ab0bc; padding:14px 16px 30px; line-height:1.7;}
+.hidden{display:none;}
+.confetti{position:fixed; top:-16px; width:10px; height:14px; z-index:999; pointer-events:none;}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);}}
+@media(max-width:520px){ .wrap{padding:12px;} .script-box{font-size:13.5px;} }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap" style="padding:0;">
+    <div class="brand">KATEぷら｜つまずきを、プラスに。</div>
+    <h1>🎧 英検2級 リスニングマスター 30問</h1>
+    <div class="sub">2024年度第2回の出題形式をベースにしたオリジナル30問（第1部15問＋第2部15問）／英文・音声はすべてオリジナル</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- スタート画面 -->
+  <div class="card" id="start-view">
+    <div class="tora">
+      <div class="tora-title">📜 虎の巻ポイント（始める前に）</div>
+      ① 英文は<b>一度しか読まれない</b>。だから「聞く前の準備」で差がつく。<br>
+      ② <b>選択肢を先読み</b>してから再生する（本番と同じ動き！）<br>
+      ③ <b>第1部＝音の連結</b>（Did you→ディジュー等）、<b>第2部＝場面・時間の切り替えサイン語</b>（However / after / now / instead 等）が聞き取りのカギ。
+    </div>
+    <p style="font-size:13.5px; line-height:1.8; margin-bottom:14px;">
+      流れ：<b>選択肢を先読み → 音声を再生（1回だけ）→ 10秒以内に解答 → 解説で「サイン語ハンター」</b>に挑戦。<br>
+      やりたいパートを選んでスタート！
+    </p>
+    <button class="btn partbtn" data-part="1">第1部（No.1〜15）を解く<small>対話問題・音の連結／脱落フォーカス</small></button>
+    <button class="btn partbtn p2" data-part="2">第2部（No.16〜30）を解く<small>説明文・場面／時間の切り替えフォーカス（いろいろな声）</small></button>
+    <button class="btn partbtn all" data-part="all">全30問を通しで解く<small>本番と同じボリューム</small></button>
+  </div>
+
+  <!-- 問題画面 -->
+  <div class="hidden" id="quiz-view">
+    <div class="scorebar">
+      <span id="qnum-label">第1問 / 15</span>
+      <span>SCORE <span class="pt" id="score-label">0</span> pt</span>
+    </div>
+    <div class="dots" id="dots"></div>
+
+    <div class="card">
+      <span class="scenechip" id="scene-chip"></span>
+      <div class="qtext hidden" id="q-text"></div>
+      <div style="font-size:12px; color:#7b93a0;" id="preread-hint">👇 まず選択肢を先読み！読めたら再生ボタン</div>
+      <div class="choices" id="choices"></div>
+
+      <div style="margin-top:14px;">
+        <button class="playbtn" id="play-btn">▶ 音声を再生（1回だけ）</button>
+        <div class="audiowarn" id="audio-warn">
+          ⚠️ この画面では音声を再生できません（プレビュー環境の制限）。<b>公開版のURLをスマホやブラウザで開いて</b>お試しください。<br>
+          ※下のボタンで音声なしでも進められます（スクリプト読解モード）。
+          <button class="btn ghost" id="skip-audio-btn" style="margin-top:8px; font-size:13px; padding:10px;">音声なしで解答に進む</button>
+        </div>
+      </div>
+
+      <div id="timer-area" class="hidden">
+        <div class="timerwrap"><div class="timerbar" id="timer-bar"></div></div>
+        <div class="timertext" id="timer-text">のこり 10 秒</div>
+      </div>
+
+      <div id="feedback-area" class="hidden">
+        <div class="feedback" id="feedback-label"></div>
+
+        <div class="replay" id="replay-area">
+          <div class="replay-head">🔁 もう一度聞く（何度でもOK）</div>
+          <button class="replay-full" id="replay-full-btn">▶ 全文をもう一度再生</button>
+          <div class="replay-sub" id="replay-sub"></div>
+          <div id="seg-list"></div>
+        </div>
+
+        <div class="expl" id="expl-box"></div>
+        <div class="tora" id="tora-box"></div>
+
+        <div class="hunter" id="hunter-area">
+          <div class="hunter-head">🔎 サイン語ハンター</div>
+          <div class="hunter-sub">スクリプトの中から<b>サイン語（場面・時間の切り替え／音の連結／重要語彙）</b>をタップして探そう！ 1つ見つけるごとに +20pt</div>
+          <div class="legend">
+            <span class="lg-shift">場面・時間の切り替え</span>
+            <span class="lg-link">音の連結・脱落</span>
+            <span class="lg-vocab">重要語彙</span>
+          </div>
+          <div class="script-box" id="script-box"></div>
+          <div class="hunter-status" id="hunter-status"></div>
+          <button class="btn ghost" id="reveal-btn" style="font-size:13px; padding:10px;">残りのサイン語を全部見る</button>
+          <div class="signnotes" id="sign-notes"></div>
+        </div>
+
+        <button class="btn green" id="next-btn" style="margin-top:14px;">次の問題へ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結果画面 -->
+  <div class="hidden" id="result-view">
+    <div class="card">
+      <div class="result-label" id="result-label"></div>
+      <div class="result-score"><span class="big" id="result-score">0</span><span style="font-size:18px; color:#7b93a0;"> pt</span></div>
+      <div style="text-align:center; font-size:14px; color:#5a7484;" id="result-detail"></div>
+      <div class="passline">
+        <div class="fill" id="passline-fill" style="width:0%;"></div>
+        <div class="mark" style="left:70%;"></div>
+        <div class="mark-label" style="left:70%;">合格ライン70%</div>
+        <div class="mark" style="left:90%; background:#c9a227;"></div>
+        <div class="mark-label" style="left:90%; color:#c9a227;">S級90%</div>
+      </div>
+
+      <div class="tora">
+        <div class="tora-title">📜 今日の虎の巻まとめ</div>
+        ・第1部は冒頭の一言で「誰と誰が・どこで」を特定。音の連結（Did you／want to／going to…）に慣れる<br>
+        ・誤答は「会話に出てきた単語」で作られる。聞こえた単語に飛びつかない<br>
+        ・第2部は <b>But / However / Instead / Now / After / In the end</b> …切り替えサインの直後に核心<br>
+        ・時間が2つ以上出たら（last week / yesterday など）「質問はどの時点？」を確認
+      </div>
+
+      <div class="wrong-review" id="wrong-review"></div>
+
+      <button class="btn" id="retry-btn" style="margin-top:14px;">同じパートをもう一度</button>
+      <button class="btn ghost" id="home-btn" style="margin-top:10px;">最初の画面（パート選択）に戻る</button>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  KATEぷら 英検2級 リスニングマスター 30問｜2024年度第2回の出題形式をベースにした演習版<br>
+  本アプリの英文・設問・音声はすべてオリジナルです（実際の検定問題ではありません）
+</footer>
+
+<script>
+"use strict";
+// sign.k: 'shift'(場面・時間切替) / 'link'(音の連結・脱落) / 'vocab'(重要語彙)
+const ITEMS = [
+  // ===== 第1部（No.1〜15）対話・音の連結フォーカス =====
+  {
+    id:"q01", part:1, audio:"audio/q01.mp3", scene:"第1部・植木の世話",
+    q:"What does Leo's mother want him to do?",
+    choices:["Water the plants","Feed the cat","Wash the car","Clean his room"],
+    ans:0,
+    script:[
+      {sp:"W", seg:[
+        {t:"Leo, "},
+        {t:"have you", sign:{k:"link", label:"have you", note:"「ハヴュー」のように連結。母親からの直接の問いかけ。"}},
+        {t:" watered the plants on the balcony? They look really dry."}
+      ]},
+      {sp:"M", seg:[{t:"Sorry, Mom, I haven't had time to do it."}]},
+      {sp:"W", seg:[
+        {t:"Well, please find time today. They're "},
+        {t:"going to", sign:{k:"link", label:"going to", note:"\"gonna\"と発音される。今日中にやってほしいという念押し。"}},
+        {t:" die if nobody waters them."}
+      ]},
+      {sp:"M", seg:[{t:"I know. I'll do it right after lunch."}]}
+    ],
+    wana:"質問は「母親が望んでいること」＝植木に水をやること。他の選択肢（猫・車・部屋）は会話に出てこない。",
+    tora:"虎の巻：\"have you\"「ハヴュー」、\"going to\"→\"gonna\"。依頼と念押しをセットで聞き取る。"
+  },
+  {
+    id:"q02", part:1, audio:"audio/q02.mp3", scene:"第1部・海外生活の電話",
+    q:"What is one thing the man says about his life in Canada?",
+    choices:["He finds his studies stressful","He has a favorite restaurant","He enjoys studying French","He sometimes cooks for himself"],
+    ans:3,
+    script:[
+      {sp:"W", seg:[{t:"Hello?"}]},
+      {sp:"M", seg:[{t:"Hi, Mom. It's Eric. Everything's going well here in Canada."}]},
+      {sp:"W", seg:[
+        {t:"Good. By the way, "},
+        {t:"what are you", sign:{k:"link", label:"what are you", note:"\"whatcha\"に近く連結される。話題が「食事」に変わる合図。"}},
+        {t:" doing about food? Are you eating out a lot?"}
+      ]},
+      {sp:"M", seg:[
+        {t:"I often do. But recently I've learned how to cook a few Canadian dishes. "},
+        {t:"I've been", sign:{k:"link", label:"I've been", note:"「アイヴビン」と連結。最近の変化（自炊するようになった）を示す現在完了進行形。"}},
+        {t:" making my own dinner a couple of times a week."}
+      ]}
+    ],
+    wana:"「外食が多い」は前振り。最新の変化＝自炊するようになったこと（cooks for himself）が答え。",
+    tora:"虎の巻：\"I've been Ving\"（最近の習慣）に注目。recentlyの後が更新情報。"
+  },
+  {
+    id:"q03", part:1, audio:"audio/q03.mp3", scene:"第1部・忘れ物の電話",
+    q:"What does the man ask the woman?",
+    choices:["Whether she knows the way to his office","Whether she can lend him an umbrella","Whether she has found his scarf","Whether she will come to his party"],
+    ans:2,
+    script:[
+      {sp:"M", seg:[
+        {t:"Hi, Mia. It's Kenji. Thanks for having me over last night. I had a great time, but I was wondering if I left my scarf at your place. "},
+        {t:"Have you seen it?", sign:{k:"link", label:"Have you seen it?", note:"「ハヴュー」と連結。itが指すのは直前のmy scarf。"}}
+      ]},
+      {sp:"W", seg:[{t:"I don't think so, Kenji. I've found a hat, but nothing else."}]},
+      {sp:"M", seg:[
+        {t:"Well, I guess I'll keep looking for it. "},
+        {t:"I've already", sign:{k:"link", label:"I've already", note:"「アイヴオールレディ」と連結。すでに確認済みの場所を示す。"}},
+        {t:" checked my bag and car. Thanks, anyway."}
+      ]}
+    ],
+    wana:"見つかったのは帽子（hat）で、聞かれているのはスカーフ（scarf）。似た場面の単語に惑わされない。",
+    tora:"虎の巻：\"Have you seen it?\"のitが何を指すか（＝スカーフ）を文頭から追う。"
+  },
+  {
+    id:"q04", part:1, audio:"audio/q04.mp3", scene:"第1部・自転車修理の電話",
+    q:"What will the man probably do?",
+    choices:["Sell his old bike to the shop","Have his bike repaired","Work at the bike shop","Get a new bike"],
+    ans:3,
+    script:[
+      {sp:"W", seg:[
+        {t:"Hello. This is Wheel Works. "},
+        {t:"We've checked", sign:{k:"link", label:"We've checked", note:"「ウィーヴチェックト」と連結。点検が完了したことを示す。"}},
+        {t:" your bicycle. It'll cost about two hundred dollars to repair the frame and replace the gears."}
+      ]},
+      {sp:"M", seg:[
+        {t:"Two hundred dollars! That's a lot for an old bike. I think I'll just buy a new one "},
+        {t:"instead", sign:{k:"shift", label:"instead", note:"「代わりに」＝修理をやめて新品を買う、という決断への切り替えサイン。"}},
+        {t:"."}
+      ]},
+      {sp:"W", seg:[{t:"OK. We can recycle your old bike for free if you buy a new one here."}]}
+    ],
+    wana:"修理せず新しいのを買うと決めた（buy a new one instead）。古い自転車は売るのではなく、無料でリサイクルしてもらえるだけ。",
+    tora:"虎の巻：\"instead\"は「代わりに」の合図。修理→新品購入への切り替えを聞き取る。"
+  },
+  {
+    id:"q05", part:1, audio:"audio/q05.mp3", scene:"第1部・出発前に叔父の家へ",
+    q:"Why is the woman staying at her uncle's house tonight?",
+    choices:["She wants to see some friends nearby","She wants to relax in the mountains","She has to look after the garden","She has to catch a train tomorrow"],
+    ans:3,
+    script:[
+      {sp:"W", seg:[{t:"Uncle Sam, thanks a lot for letting me stay at your house tonight."}]},
+      {sp:"M", seg:[
+        {t:"No problem. I know how much more convenient it is to "},
+        {t:"get to", sign:{k:"link", label:"get to", note:"「ゲッタ」のように連結。"}},
+        {t:" the station from here."}
+      ]},
+      {sp:"W", seg:[
+        {t:"Yeah. I love living in the mountains, but it's just so far to the station. I'd have to "},
+        {t:"get up", sign:{k:"link", label:"get up", note:"「ゲラップ」のように連結。翌朝早い理由に直結する。"}},
+        {t:" really early in the morning."}
+      ]},
+      {sp:"M", seg:[{t:"Well, you're always welcome to stay here before trips."}]}
+    ],
+    wana:"「山が好き」は前振り。理由は明日の駅までの移動のため（早朝出発＝電車に乗るため）。",
+    tora:"虎の巻：好き嫌いの感想と、実際にそこに泊まる理由を区別する。"
+  },
+  {
+    id:"q06", part:1, audio:"audio/q06.mp3", scene:"第1部・レストランのメニュー",
+    q:"What do the man and woman decide to do?",
+    choices:["Order only seafood","Share what they order","Ask the chef for a recommendation","Go to another restaurant"],
+    ans:1,
+    script:[
+      {sp:"M", seg:[
+        {t:"Honey, the dishes on this menu look delicious. What are you "},
+        {t:"going to", sign:{k:"link", label:"going to", note:"\"gonna\"に近い発音。"}},
+        {t:" order?"}
+      ]},
+      {sp:"W", seg:[{t:"I'm not sure. The chicken curry looks good, but so does the seafood pasta."}]},
+      {sp:"M", seg:[
+        {t:"I've been thinking about getting both of those dishes, too. "},
+        {t:"Why don't we", sign:{k:"link", label:"Why don't we", note:"提案の定番表現。「ワイドンウィ」と連結。"}},
+        {t:" get one of each and split them with each other?"}
+      ]},
+      {sp:"W", seg:[{t:"Great idea!"}]}
+    ],
+    wana:"2品とも頼んで分け合う提案（split them）。片方だけ注文するわけではない。",
+    tora:"虎の巻：\"Why don't we ~?\"は提案の合図。splitを聞き取れれば正解。"
+  },
+  {
+    id:"q07", part:1, audio:"audio/q07.mp3", scene:"第1部・旅行先でのハプニング",
+    q:"What happened to Marcus in Kyoto?",
+    choices:["He met a famous singer","He was filmed at a shop","He was given a tour of a TV station","He won a free train ticket"],
+    ans:1,
+    script:[
+      {sp:"W", seg:[{t:"How was your trip to Kyoto, Marcus?"}]},
+      {sp:"M", seg:[
+        {t:"It was fun. Oh, guess what? I'm "},
+        {t:"going to", sign:{k:"link", label:"going to", note:"\"gonna\"のように連結。新情報の切り出し。"}},
+        {t:" be on TV there, in a commercial for a tea shop."}
+      ]},
+      {sp:"W", seg:[{t:"Really? How did that happen?"}]},
+      {sp:"M", seg:[
+        {t:"I was buying tea at the shop when they were "},
+        {t:"filming the", sign:{k:"link", label:"filming the", note:"g+th が連結して聞こえる。撮影に居合わせた状況を表す。"}},
+        {t:" commercial, so they filmed me, too. I also got the tea for free."}
+      ]}
+    ],
+    wana:"有名人に会った訳でも、無料切符をもらった訳でもない。お茶屋でCM撮影に居合わせて映された、が正解。",
+    tora:"虎の巻：guess what?の後の新情報に注目。free tea（お茶が無料）とfree ticket（切符）を混同しない。"
+  },
+  {
+    id:"q08", part:1, audio:"audio/q08.mp3", scene:"第1部・試験週間の会話",
+    q:"What did the boy and girl do yesterday?",
+    choices:["They studied history together all day","They took a test for another subject","They went to eat pancakes after the test","They celebrated the girl's birthday"],
+    ans:1,
+    script:[
+      {sp:"M", seg:[
+        {t:"", },
+        {t:"Have you", sign:{k:"link", label:"Have you", note:"「ハヴュー」と連結。"}},
+        {t:" studied for today's test, Naomi?"}
+      ]},
+      {sp:"W", seg:[{t:"I've done everything I could. I hope I can do better than yesterday."}]},
+      {sp:"M", seg:[
+        {t:"Yeah, the history test was too difficult for me yesterday. Whatever happens, "},
+        {t:"today is", sign:{k:"shift", label:"today is", note:"「今日」への時点の切り替え。yesterday（昨日）との対比に注意。"}},
+        {t:" the last day of exam week."}
+      ]},
+      {sp:"W", seg:[{t:"That's true. Let's go get some pancakes to celebrate after the test this afternoon."}]}
+    ],
+    wana:"質問は「昨日」何をしたか。昨日は歴史のテスト＝今日受ける教科とは違う教科のテストだった、ということ。",
+    tora:"虎の巻：today／yesterday／this afternoonと3つの時点が出る。質問がどの時点かを確認。"
+  },
+  {
+    id:"q09", part:1, audio:"audio/q09.mp3", scene:"第1部・部屋探し",
+    q:"What is the woman's problem?",
+    choices:["There are too many rooms to choose from","She needs to find a room quickly","Her room does not have parking","Rooms near campus are too expensive"],
+    ans:3,
+    script:[
+      {sp:"M", seg:[
+        {t:"Hi, Aya. I heard you were looking for a new room. "},
+        {t:"Have you", sign:{k:"link", label:"Have you", note:"「ハヴュー」と連結。"}},
+        {t:" found anything nice?"}
+      ]},
+      {sp:"W", seg:[{t:"Hi, Leo. I'm having a hard time finding one that I like."}]},
+      {sp:"M", seg:[{t:"What are some conditions that you don't want to give up?"}]},
+      {sp:"W", seg:[
+        {t:"Well, I "},
+        {t:"want it to", sign:{k:"link", label:"want it to", note:"「ワンティットゥ」と連結。理想の条件を述べる部分。"}},
+        {t:" be within walking distance of campus, but I can't find one that's within my budget."}
+      ]}
+    ],
+    wana:"「大学まで歩ける距離」は条件。困っているのは予算内に収まらない（＝近くは高い）こと。",
+    tora:"虎の巻：butの後に本当の問題が来る。条件と悩みを分けて聞く。"
+  },
+  {
+    id:"q10", part:1, audio:"audio/q10.mp3", scene:"第1部・オフィスのWi-Fiトラブル",
+    q:"What does the man suggest the woman do?",
+    choices:["Pick the Wi-Fi network by hand","Bring her laptop to the second floor","Use a different laptop from now on","Try to restart her laptop"],
+    ans:0,
+    script:[
+      {sp:"W", seg:[
+        {t:"Sam, "},
+        {t:"can you", sign:{k:"link", label:"can you", note:"「ケニュー」と連結。"}},
+        {t:" take a look at my laptop? It won't connect to the Internet."}
+      ]},
+      {sp:"M", seg:[{t:"Sure. Have you used the laptop on another floor recently?"}]},
+      {sp:"W", seg:[{t:"Yes, I had a meeting on the second floor, and it hasn't been working since I got back."}]},
+      {sp:"M", seg:[
+        {t:"It looks like your laptop is still trying to connect to another Wi-Fi network. "},
+        {t:"You should", sign:{k:"link", label:"You should", note:"提案・助言の合図。「ユーシュド」に近い。"}},
+        {t:" select the network by hand."}
+      ]}
+    ],
+    wana:"別の階のWi-Fiにつながろうとしたままなのが原因。再起動や別階に行くことではなく、手動でネットワークを選ぶのが提案。",
+    tora:"虎の巻：\"You should ~\"が提案の合図。原因と対策をセットで聞く。"
+  },
+  {
+    id:"q11", part:1, audio:"audio/q11.mp3", scene:"第1部・ネイルサロンの不満",
+    q:"Why is the woman disappointed?",
+    choices:["She missed an important appointment","She does not like her new nail color","The man forgot to call her","The nail salon she always goes to is closed"],
+    ans:1,
+    script:[
+      {sp:"W", seg:[{t:"I don't think I will ever go back to Golden Nails again. I am so disappointed."}]},
+      {sp:"M", seg:[{t:"What's wrong? Your new nails look great."}]},
+      {sp:"W", seg:[
+        {t:"I asked them for a light pink color. It "},
+        {t:"turned out to", sign:{k:"link", label:"turned out to", note:"「ターンダウットゥ」と連結。予想（light pink）と結果（darker）が対比される。"}},
+        {t:" be much darker than I expected."}
+      ]},
+      {sp:"M", seg:[{t:"Don't worry too much. I think the color suits you well."}]}
+    ],
+    wana:"予約を逃したわけでもお店が閉まっているわけでもない。頼んだ色よりずっと濃かった＝色が気に入らない、が理由。",
+    tora:"虎の巻：expected（予想）とactual（実際）を区別する。"
+  },
+  {
+    id:"q12", part:1, audio:"audio/q12.mp3", scene:"第1部・発表会への到着",
+    q:"What is the man worried about?",
+    choices:["Whether they will miss Mio's turn","Disturbing others during the performance","Whether he lost his ticket","Forgetting his own performance"],
+    ans:1,
+    script:[
+      {sp:"M", seg:[
+        {t:"", },
+        {t:"Do you", sign:{k:"link", label:"Do you", note:"「デュー」と連結。"}},
+        {t:" think we can arrive on time for the piano recital?"}
+      ]},
+      {sp:"W", seg:[{t:"We might miss the first performer. We should arrive by Mio's turn."}]},
+      {sp:"M", seg:[
+        {t:"I'm a bit worried that we might "},
+        {t:"disturb the", sign:{k:"vocab", label:"disturb the", note:"「妨げる」＝男性が本当に心配していることの核心語。"}},
+        {t:" performer when we enter the room."}
+      ]},
+      {sp:"W", seg:[{t:"That's true. There should be someone outside the door to let us in at the right moment."}]}
+    ],
+    wana:"Mioの番に間に合うかは既に話し合い済み。男性が心配しているのは、入室時に演奏を妨げてしまうこと。",
+    tora:"虎の巻：\"worried that ~\"の後が「心配の中身」。話題が切り替わる箇所を聞き取る。"
+  },
+  {
+    id:"q13", part:1, audio:"audio/q13.mp3", scene:"第1部・小説の感想",
+    q:"What does the woman think about the novel?",
+    choices:["It is not as good as the man suggested","Other novels she has read this year are more interesting","She likes the main character","It has a surprising ending"],
+    ans:3,
+    script:[
+      {sp:"M", seg:[{t:"That was an interesting novel."}]},
+      {sp:"W", seg:[
+        {t:"I thought the ending was "},
+        {t:"surprising", sign:{k:"vocab", label:"surprising", note:"女性の感想の核心語。結末に驚いたことを示す。"}},
+        {t:". I was so shocked at how it turned out."}
+      ]},
+      {sp:"M", seg:[{t:"Out of the five novels that I have read this year, this one comes close to the top. What about you?"}]},
+      {sp:"W", seg:[
+        {t:"", },
+        {t:"I haven't", sign:{k:"link", label:"I haven't", note:"「アイヘイヴント」と連結。他の小説をまだ読んでいない、という前提。"}},
+        {t:" read any other novels this year yet, so this one would be my number one for now!"}
+      ]}
+    ],
+    wana:"女性が挙げたのは「結末が意外だった（shocked）」という感想。他の小説と比べた話や登場人物の好みではない。",
+    tora:"虎の巻：女性の発言だけに答えがある問題。男性の発言（5冊中で上位）と混同しない。"
+  },
+  {
+    id:"q14", part:1, audio:"audio/q14.mp3", scene:"第1部・グループ課題の確認",
+    q:"What is one thing we learn about the science fair project?",
+    choices:["Groups with absent members will not receive a grade","It has been canceled","Students are expected to do it as a group","The deadline has been changed"],
+    ans:2,
+    script:[
+      {sp:"W", seg:[
+        {t:"Hi, Mr. Baker. "},
+        {t:"Can I", sign:{k:"link", label:"Can I", note:"「キャナイ」と連結。"}},
+        {t:" ask you about the science fair project?"}
+      ]},
+      {sp:"M", seg:[{t:"Sure, Nina. What about it?"}]},
+      {sp:"W", seg:[{t:"You said that it would be a group project. So, if one of the members is absent on the day of the presentation, can the rest of the group receive a grade?"}]},
+      {sp:"M", seg:[
+        {t:"You will receive a grade, but the other members of the group "},
+        {t:"must cover", sign:{k:"vocab", label:"must cover", note:"「カバーしなければならない」＝グループで行う課題であることの決め手。"}},
+        {t:" that person's part."}
+      ]}
+    ],
+    wana:"欠席者がいても採点はされる（0点にはならない）。会話全体からわかる事実は「グループで行う課題である」こと。",
+    tora:"虎の巻：質問は会話全体からわかる「事実」。butの後の細かい条件だけに気を取られない。"
+  },
+  {
+    id:"q15", part:1, audio:"audio/q15.mp3", scene:"第1部・仕事の割り振り",
+    q:"What does Ms. Reyes decide Sam should do?",
+    choices:["Finish the report today","Prepare for a business trip","Work overtime every day this week","Ask someone else to send the document"],
+    ans:0,
+    script:[
+      {sp:"W", seg:[
+        {t:"Sam, I'd "},
+        {t:"like you to", sign:{k:"link", label:"like you to", note:"「ライクユートゥ」と連結。依頼の中心部分。"}},
+        {t:" finish this sales report today. It's for our Osaka office."}
+      ]},
+      {sp:"M", seg:[{t:"OK, Ms. Reyes. Wow, this is long! I may have to work overtime to finish it. I still have to prepare the slides you asked me to do."}]},
+      {sp:"W", seg:[
+        {t:"Well, I really "},
+        {t:"need you to", sign:{k:"link", label:"need you to", note:"「ニージュートゥ」と連結。優先順位（レポート優先）を示す。"}},
+        {t:" finish the report by this evening, so I'll get someone else to help with the slides."}
+      ]},
+      {sp:"M", seg:[{t:"All right. Thanks."}]}
+    ],
+    wana:"スライド準備は他の人に任せることになった。サムの仕事は今日中にレポートを終えること。",
+    tora:"虎の巻：\"I'll get someone else to ~\"で仕事の分担が入れ替わる。誰が何をするかを最後まで確認。"
+  },
+
+  // ===== 第2部（No.16〜30）説明文・場面/時間の切り替えフォーカス =====
+  {
+    id:"q16", part:2, audio:"audio/q16.mp3", scene:"第2部・池の落ち葉除去装置",
+    q:"How does the Solar Skimmer remove leaves from ponds?",
+    choices:["It stops the pond's flow","It melts the leaves using heat","It pushes the leaves to a collector","It attracts fish that eat the leaves"],
+    ans:2,
+    script:[
+      {sp:null, seg:[
+        {t:"The Solar Skimmer is a unique system for removing floating leaves from ponds that is currently under development. A device with a solar-powered fan is placed on the water's surface. The fan blows air, which "},
+        {t:"pushes", sign:{k:"vocab", label:"pushes", note:"仕組みの核心動詞。溶かす(melt)のでも吸い寄せる(attract)のでもなく「押し出す」。"}},
+        {t:" floating leaves and other debris toward a net attached to the edge of the pond. "},
+        {t:"Workers then", sign:{k:"shift", label:"Workers then", note:"「その後」＝メンテナンス（ネットを空にする）の話への切り替え。"}},
+        {t:" simply empty the net once a week."}
+      ]}
+    ],
+    wana:"熱で溶かすのでも魚を使うのでもない。ファンの風で落ち葉をネットへ「押し出す（pushes）」仕組み。",
+    tora:"虎の巻：動詞（push）が答えの核。似た働きの選択肢（melt/attract）に惑わされない。"
+  },
+  {
+    id:"q17", part:2, audio:"audio/q17.mp3", scene:"第2部・博物館スタッフの仕事",
+    q:"What does Noah like most about his job?",
+    choices:["Meeting many international tourists","Answering visitors' historical questions","Reading old documents for free","Working with a lot of different staff"],
+    ans:1,
+    script:[
+      {sp:null, seg:[
+        {t:"Noah works at a city museum. He likes his job very much. His "},
+        {t:"favorite part is", sign:{k:"vocab", label:"favorite part is", note:"「一番好きな部分」＝質問(most)に直結するキーフレーズ。"}},
+        {t:" answering visitors' questions about local history. He likes helping them understand the exhibits, and he feels that he is making a meaningful difference. "},
+        {t:"He also likes", sign:{k:"shift", label:"He also likes", note:"「それに加えて」＝一番ではない、付け足しの楽しみへの切り替え。"}},
+        {t:" reading old documents and working with new volunteers every year."}
+      ]}
+    ],
+    wana:"「一番好きな部分」はfavorite partの直後。読書や新人指導は「also」の後＝別の楽しみであって一番ではない。",
+    tora:"虎の巻：favorite / most の直後が「一番」の答え。alsoの後は付け足し情報。"
+  },
+  {
+    id:"q18", part:2, audio:"audio/q18.mp3", scene:"第2部・ビーバーのダム",
+    q:"What is true about beaver dams?",
+    choices:["They stop all rivers from flowing","They give animals places to live","They are usually made by cities","They make water flow faster"],
+    ans:1,
+    script:[
+      {sp:null, seg:[
+        {t:"When beavers build dams in a river, they block the flow of water. This can cause flooding in areas nearby. "},
+        {t:"However,", sign:{k:"shift", label:"However,", note:"逆接。問題点(flooding)から利点への切り替え。"}},
+        {t:" beaver dams also create wetlands that provide living spaces for many animal species. In fact, some conservation groups build artificial beaver dams to increase wildlife in certain areas."}
+      ]}
+    ],
+    wana:"ダムは川の流れを止めるが、生態系を壊すだけではない。Howeverの後＝動物のすみかになる、が「正しいこと」。",
+    tora:"虎の巻：前半（問題点）とHoweverの後（利点）の両方が出る問題は、質問に合う方を選ぶ。"
+  },
+  {
+    id:"q19", part:2, audio:"audio/q19.mp3", scene:"第2部・船のエンジン開発",
+    q:"Why are companies trying to build quieter ship engines?",
+    choices:["To avoid scaring away tourists","To reduce the cost of building ships","To allow ships near protected coastal areas","To help sailors operate ships more easily"],
+    ans:2,
+    script:[
+      {sp:null, seg:[
+        {t:"Loud engine noise from large ships can disturb whales and other sea animals. Because of this, ships are not allowed to travel close to certain protected coastal areas. "},
+        {t:"However,", sign:{k:"shift", label:"However,", note:"逆接。規制から「新しい取り組み」への切り替え。"}},
+        {t:" several companies are trying to build quieter ship engines that do not disturb marine life as much. "},
+        {t:"If they succeed,", sign:{k:"shift", label:"If they succeed,", note:"「もし成功すれば」＝目的とその結果への切り替え。"}},
+        {t:" more ships could be allowed to travel near these protected areas."}
+      ]}
+    ],
+    wana:"静かなエンジンを作る目的は「保護区に近づけるようにするため」。コスト削減や操作のしやすさではない。",
+    tora:"虎の巻：Howeverの後に「新しい試み」、If they succeedの後に「その結果」が来る。目的と結果を混同しない。"
+  },
+  {
+    id:"q20", part:2, audio:"audio/q20.mp3", scene:"第2部・ショッピングモールのアナウンス",
+    q:"What is one thing we learn from the announcement?",
+    choices:["Lot A is now closed for cleaning","Free shuttles run between the two lots","Lot B has more than twenty stores","Snacks are served on the shuttle for free"],
+    ans:1,
+    script:[
+      {sp:null, seg:[
+        {t:"Thank you for choosing Riverside Shopping Mall, Parking Lot B. We are currently repaving the road in this lot. "},
+        {t:"If you're looking for", sign:{k:"shift", label:"If you're looking for", note:"「もし〜をお探しなら」＝別の場所(Lot A)への案内に切り替わる合図。"}},
+        {t:" more parking, please go to Lot A, which has space for two hundred cars. You can use the free shuttles to travel between Lot B and Lot A. "},
+        {t:"While the repaving work continues,", sign:{k:"shift", label:"While the repaving work continues,", note:"工事中に限った特別な運行間隔（5分ごと）への切り替え。"}},
+        {t:" the shuttles will run every five minutes, instead of every ten minutes."}
+      ]}
+    ],
+    wana:"工事中なのはB区画の道路（お店20軒はA区画の話ではない）。事実として正しいのは無料シャトルの運行。",
+    tora:"虎の巻：アナウンス系は「事実として何が言えるか」を選ぶ。数字（5分/10分）の変化にも注意。"
+  },
+  {
+    id:"q21", part:2, audio:"audio/q21.mp3", scene:"第2部・駐輪スペースの案内",
+    q:"What is one thing we learn from the announcement?",
+    choices:["Guests are not allowed to bring bicycles","Some staff are using the wrong bike racks","Staff cannot ride bicycles to work","The staff bike rack is currently closed"],
+    ans:1,
+    script:[
+      {sp:null, seg:[
+        {t:"Attention, all staff. Some employees' bicycles are parked in the guest racks. "},
+        {t:"However,", sign:{k:"shift", label:"However,", note:"逆接。「誰の場所か」が入れ替わる合図。"}},
+        {t:" these racks are for people visiting our building for meetings and other purposes. "},
+        {t:"Staff are not allowed", sign:{k:"vocab", label:"Staff are not allowed", note:"アナウンスの核心＝スタッフはこのラックを使用禁止。"}},
+        {t:" to use those racks. To avoid having your bicycle moved, please park in the staff area by the end of the day. Thank you."}
+      ]}
+    ],
+    wana:"来客用ラックにスタッフの自転車が停められている、が問題。ゲストが自転車を禁止されているのではない。",
+    tora:"虎の巻：Howeverの前後で「誰の話」かが入れ替わる。主語を正確に聞き取る。"
+  },
+  {
+    id:"q22", part:2, audio:"audio/q22.mp3", scene:"第2部・ギャラリートークの案内",
+    q:"What will happen after the talk?",
+    choices:["The guests can meet the artist","The guests can buy paintings","The guests can join a workshop","The guests can buy a special ticket"],
+    ans:0,
+    script:[
+      {sp:null, seg:[
+        {t:"Welcome to the gallery! Today's talk requires a special ticket. During the talk, the artist will explain her newest paintings. "},
+        {t:"After the talk,", sign:{k:"shift", label:"After the talk,", note:"「トークの後」＝この先に起きることへの切り替え。質問はここ。"}},
+        {t:" the artist will come to the lobby to meet the guests. You can bring a poster for her to sign and take photographs. Now, please enjoy the talk!"}
+      ]}
+    ],
+    wana:"サイン会でもらうのはサインであって、絵を買うわけではない。After the talkの後の内容が「その後に起きること」。",
+    tora:"虎の巻：Afterの後が「次に起きること」。beforeとafterを取り違えない。"
+  },
+  {
+    id:"q23", part:2, audio:"audio/q23.mp3", scene:"第2部・消防士の仕事",
+    q:"Why does Maya go to elementary schools?",
+    choices:["To look for lost pets","To talk about local events","To help students become firefighters","To teach children about fire safety"],
+    ans:3,
+    script:[
+      {sp:null, seg:[
+        {t:"Maya works as a firefighter in her town. She is busy in the summer because many campers come to the nearby forest for camping trips. People ask for her help when there are small fires. "},
+        {t:"During less busy seasons,", sign:{k:"shift", label:"During less busy seasons,", note:"「忙しくない時期」＝夏と対比される時期への切り替え。質問はここ。"}},
+        {t:" Maya visits local elementary schools to talk with students about fire safety."}
+      ]}
+    ],
+    wana:"忙しい夏は火事対応、閑散期に小学校訪問。訪問の目的＝防火について子どもに教えること。",
+    tora:"虎の巻：忙しい時期／落ち着いた時期で行動が変わる。質問がどちらの時期かを確認。"
+  },
+  {
+    id:"q24", part:2, audio:"audio/q24.mp3", scene:"第2部・フォトグラファーの報酬",
+    q:"What did Emi do with the money?",
+    choices:["She rented a studio","She bought a new lens","She took a vacation","She studied to be an editor"],
+    ans:1,
+    script:[
+      {sp:null, seg:[
+        {t:"Emi is a photographer. Recently, Emi took photos at a wedding. She used her own equipment and some props provided by the couple. The photos made the couple very happy. The couple paid Emi some money, "},
+        {t:"which Emi spent on", sign:{k:"vocab", label:"which Emi spent on", note:"「その使い道」＝お金が何に使われたかを示す核心部分。"}},
+        {t:" a new camera lens. The lens will help Emi take even better photos in the future."}
+      ]}
+    ],
+    wana:"お金の使い道は新しいレンズ。スタジオを借りた話や休暇の話は出てこない。",
+    tora:"虎の巻：whichの後（spent on ~）が「使い道」の答え。"
+  },
+  {
+    id:"q25", part:2, audio:"audio/q25.mp3", scene:"第2部・オフィス改善コンテスト",
+    q:"What did Ken do for the office contest?",
+    choices:["He created a garden","He painted a mural","He repaired the lights in the hall","He fixed things in the break room"],
+    ans:3,
+    script:[
+      {sp:null, seg:[
+        {t:"Ken's company held a contest asking employees to help improve the office. One employee planted flowers near the entrance. "},
+        {t:"Another employee", sign:{k:"shift", label:"Another employee", note:"主語の切り替え。ここは別の人の行動（壁画）。"}},
+        {t:" painted a mural for the hallway. "},
+        {t:"Ken repaired", sign:{k:"vocab", label:"Ken repaired", note:"ケン本人の行動＝休憩室のイスの修理。質問の答えはここ。"}},
+        {t:" some broken chairs in the break room. The judges looked at all of the entries and decided which one was the most useful. Ken won the contest and received a prize."}
+      ]}
+    ],
+    wana:"花・壁画は他の社員の行動。ケンがしたのは休憩室のイスの修理。誰が何をしたかを区別する。",
+    tora:"虎の巻：One / Another / Ken…と主語が変わるたび行動も変わる。人物ごとにメモする。"
+  },
+  {
+    id:"q26", part:2, audio:"audio/q26.mp3", scene:"第2部・ギター教室選び",
+    q:"Why did Yuto decide to take guitar classes at the community center?",
+    choices:["The local music school has too many students","He wanted to take more classes","It is closer to his home","The classes are more interesting"],
+    ans:1,
+    script:[
+      {sp:null, seg:[
+        {t:"Yuto wanted to learn to play the guitar. There were two guitar classes near his house, one at a local music school and the other at the community center. "},
+        {t:"Although", sign:{k:"shift", label:"Although", note:"逆接的な譲歩。「面白そうだが」の後に本当の決め手が続く。"}},
+        {t:" the music school class seemed more interesting, the community center class was cheaper and met more often. Yuto wanted to take more classes, so he decided to take the class at the community center."}
+      ]}
+    ],
+    wana:"音楽学校の方が面白そうだが、安くて頻度が高いコミュニティセンターを選んだ理由＝もっとレッスンを受けたかったから。",
+    tora:"虎の巻：Althoughの後に「実際の選択」とその理由が来る。感想と決め手を区別する。"
+  },
+  {
+    id:"q27", part:2, audio:"audio/q27.mp3", scene:"第2部・美術の授業",
+    q:"What did Ms. Reed's students learn?",
+    choices:["How to do well on art tests","How to choose brushes","How to mix colors from paints","How to make clay pots"],
+    ans:2,
+    script:[
+      {sp:null, seg:[
+        {t:"Ms. Reed is an art teacher. She likes to plan creative projects for her students. Recently, she wanted her students to "},
+        {t:"learn how colors combine", sign:{k:"vocab", label:"learn how colors combine", note:"生徒が学んだことの核心フレーズ。"}},
+        {t:". The students chose different paints and mixed them in small cups. The students who experimented carefully created many beautiful new colors."}
+      ]}
+    ],
+    wana:"テストのコツや粘土の話ではなく、絵の具を混ぜて色の組み合わせ方を学んだ、が正解。",
+    tora:"虎の巻：\"wanted her students to learn\"の直後が「学んだこと」の中身。"
+  },
+  {
+    id:"q28", part:2, audio:"audio/q28.mp3", scene:"第2部・イタリア旅行のお土産",
+    q:"What will Aya do with the handmade scarves?",
+    choices:["Give them to her sister as a gift","Bring them to a shop in Italy","Use them at home","Sell them online"],
+    ans:0,
+    script:[
+      {sp:null, seg:[
+        {t:"Aya visited a small town in Italy. During her trip, she went to a local market that sold many kinds of cheese. When Aya arrived, she saw a display of handmade scarves on a table "},
+        {t:"next to the cheese", sign:{k:"vocab", label:"next to the cheese", note:"目立つのはチーズの市場という場面描写。実際に買ったのはスカーフの方。"}},
+        {t:". She bought some scarves "},
+        {t:"as a birthday gift for her sister", sign:{k:"vocab", label:"as a birthday gift for her sister", note:"スカーフの用途＝妹への誕生日プレゼント。質問の答え。"}},
+        {t:"."}
+      ]}
+    ],
+    wana:"市場で目立つのはチーズだが、買ったのはスカーフ。用途は妹への誕生日プレゼント。",
+    tora:"虎の巻：場面描写（チーズの市場）と実際に買った物（スカーフ）を区別する。"
+  },
+  {
+    id:"q29", part:2, audio:"audio/q29.mp3", scene:"第2部・地域センターのスタッフ",
+    q:"What will Ben do this weekend?",
+    choices:["Work extra hours","Help kids with homework","Visit one of his family members","Clean the center while it is closed"],
+    ans:2,
+    script:[
+      {sp:null, seg:[
+        {t:"Ben works at a community center. One of his main tasks is to help children with their homework. He helps them with reading and math. "},
+        {t:"Usually,", sign:{k:"shift", label:"Usually,", note:"「普段は」＝いつものパターン。この後Howeverで今回だけの例外が来る。"}},
+        {t:" Ben is very busy on the weekends, when children have more free time to study. "},
+        {t:"However,", sign:{k:"shift", label:"However,", note:"逆接。「今回だけ」休館という例外への切り替え。質問はこの後。"}},
+        {t:" the center will be closed this weekend due to a national holiday. Ben plans to use the holiday to visit his grandmother."}
+      ]}
+    ],
+    wana:"普段の週末は忙しいが、今回は祝日で休館。空いた時間を使って祖母を訪ねる予定。",
+    tora:"虎の巻：Usually（いつも）とHowever（今回は）の対比。「今回」の予定を聞き取る。"
+  },
+  {
+    id:"q30", part:2, audio:"audio/q30.mp3", scene:"第2部・洗濯物と閉め忘れ",
+    q:"Why was Noah annoyed with himself?",
+    choices:["His clothes got wet because of the rain","His house had a bad smell","He came home too late to do chores","He was upset about the weather"],
+    ans:1,
+    script:[
+      {sp:null, seg:[
+        {t:"As soon as Noah came home today, he had to bring the laundry in from the balcony because it was starting to rain. "},
+        {t:"While he was putting", sign:{k:"shift", label:"While he was putting", note:"「〜している最中に」＝洗濯物をしまいながら気づいたこと、への切り替え。"}},
+        {t:" the clothes away, he realized that he "},
+        {t:"had forgotten to", sign:{k:"vocab", label:"had forgotten to", note:"「〜し忘れていた」＝腹を立てた本当の理由（窓の閉め忘れ）。"}},
+        {t:" close the kitchen window in the morning. He was annoyed with himself because the whole house smelled damp."}
+      ]}
+    ],
+    wana:"雨で困ったのは洗濯物を取り込んだことより、窓を閉め忘れて家中がにおったこと。",
+    tora:"虎の巻：whileの後に「その最中に気づいたこと」が来る。自分に腹を立てた理由の核心を探す。"
+  }
+];
+
+// 第2部の文リスト（一文ずつ再生用。音声ファイル audio/q{id}_s{n}.mp3 に対応）
+const P2_SENTENCES = {
+  q16:["The Solar Skimmer is a unique system for removing floating leaves from ponds that is currently under development.","A device with a solar-powered fan is placed on the water's surface.","The fan blows air, which pushes floating leaves and other debris toward a net attached to the edge of the pond.","Workers then simply empty the net once a week."],
+  q17:["Noah works at a city museum.","He likes his job very much.","His favorite part is answering visitors' questions about local history.","He likes helping them understand the exhibits, and he feels that he is making a meaningful difference.","He also likes reading old documents and working with new volunteers every year."],
+  q18:["When beavers build dams in a river, they block the flow of water.","This can cause flooding in areas nearby.","However, beaver dams also create wetlands that provide living spaces for many animal species.","In fact, some conservation groups build artificial beaver dams to increase wildlife in certain areas."],
+  q19:["Loud engine noise from large ships can disturb whales and other sea animals.","Because of this, ships are not allowed to travel close to certain protected coastal areas.","However, several companies are trying to build quieter ship engines that do not disturb marine life as much.","If they succeed, more ships could be allowed to travel near these protected areas."],
+  q20:["Thank you for choosing Riverside Shopping Mall, Parking Lot B.","We are currently repaving the road in this lot.","If you're looking for more parking, please go to Lot A, which has space for two hundred cars.","You can use the free shuttles to travel between Lot B and Lot A.","While the repaving work continues, the shuttles will run every five minutes, instead of every ten minutes."],
+  q21:["Attention, all staff.","Some employees' bicycles are parked in the guest racks.","However, these racks are for people visiting our building for meetings and other purposes.","Staff are not allowed to use those racks.","To avoid having your bicycle moved, please park in the staff area by the end of the day.","Thank you."],
+  q22:["Welcome to the gallery!","Today's talk requires a special ticket.","During the talk, the artist will explain her newest paintings.","After the talk, the artist will come to the lobby to meet the guests.","You can bring a poster for her to sign and take photographs.","Now, please enjoy the talk!"],
+  q23:["Maya works as a firefighter in her town.","She is busy in the summer because many campers come to the nearby forest for camping trips.","People ask for her help when there are small fires.","During less busy seasons, Maya visits local elementary schools to talk with students about fire safety."],
+  q24:["Emi is a photographer.","Recently, Emi took photos at a wedding.","She used her own equipment and some props provided by the couple.","The photos made the couple very happy.","The couple paid Emi some money, which Emi spent on a new camera lens.","The lens will help Emi take even better photos in the future."],
+  q25:["Ken's company held a contest asking employees to help improve the office.","One employee planted flowers near the entrance.","Another employee painted a mural for the hallway.","Ken repaired some broken chairs in the break room.","The judges looked at all of the entries and decided which one was the most useful.","Ken won the contest and received a prize."],
+  q26:["Yuto wanted to learn to play the guitar.","There were two guitar classes near his house, one at a local music school and the other at the community center.","Although the music school class seemed more interesting, the community center class was cheaper and met more often.","Yuto wanted to take more classes, so he decided to take the class at the community center."],
+  q27:["Ms. Reed is an art teacher.","She likes to plan creative projects for her students.","Recently, she wanted her students to learn how colors combine.","The students chose different paints and mixed them in small cups.","The students who experimented carefully created many beautiful new colors."],
+  q28:["Aya visited a small town in Italy.","During her trip, she went to a local market that sold many kinds of cheese.","When Aya arrived, she saw a display of handmade scarves on a table next to the cheese.","She bought some scarves as a birthday gift for her sister."],
+  q29:["Ben works at a community center.","One of his main tasks is to help children with their homework.","He helps them with reading and math.","Usually, Ben is very busy on the weekends, when children have more free time to study.","However, the center will be closed this weekend due to a national holiday.","Ben plans to use the holiday to visit his grandmother."],
+  q30:["As soon as Noah came home today, he had to bring the laundry in from the balcony because it was starting to rain.","While he was putting the clothes away, he realized that he had forgotten to close the kitchen window in the morning.","He was annoyed with himself because the whole house smelled damp."]
+};
+
+// ============ 状態 ============
+let SET = [];
+let qIndex = 0, score = 0, streak = 0, answered = false, timerId = null, audioObj = null, audioPlayed = false;
+const results = [];
+
+// ============ 要素 ============
+const startView = document.getElementById("start-view");
+const quizView = document.getElementById("quiz-view");
+const resultView = document.getElementById("result-view");
+const dotsEl = document.getElementById("dots");
+const qnumLabel = document.getElementById("qnum-label");
+const scoreLabel = document.getElementById("score-label");
+const sceneChip = document.getElementById("scene-chip");
+const qText = document.getElementById("q-text");
+const choicesEl = document.getElementById("choices");
+const playBtn = document.getElementById("play-btn");
+const audioWarn = document.getElementById("audio-warn");
+const skipAudioBtn = document.getElementById("skip-audio-btn");
+const timerArea = document.getElementById("timer-area");
+const timerBar = document.getElementById("timer-bar");
+const timerText = document.getElementById("timer-text");
+const feedbackArea = document.getElementById("feedback-area");
+const feedbackLabel = document.getElementById("feedback-label");
+const explBox = document.getElementById("expl-box");
+const toraBox = document.getElementById("tora-box");
+const scriptBox = document.getElementById("script-box");
+const hunterStatus = document.getElementById("hunter-status");
+const revealBtn = document.getElementById("reveal-btn");
+const signNotes = document.getElementById("sign-notes");
+const nextBtn = document.getElementById("next-btn");
+const prereadHint = document.getElementById("preread-hint");
+const replayFullBtn = document.getElementById("replay-full-btn");
+const replaySub = document.getElementById("replay-sub");
+const segList = document.getElementById("seg-list");
+
+// ============ もう一度聞く（全文＋一文ずつ） ============
+let replayAudio = null;
+function stopReplay(){ if(replayAudio){ replayAudio.pause(); replayAudio = null; } }
+function playFile(src, fallbackSrc, btn){
+  stopReplay();
+  document.querySelectorAll(".seg-play.playing, .replay-full.playing").forEach(b=>b.classList.remove("playing"));
+  let fellBack = false;
+  const a = new Audio(src);
+  replayAudio = a;
+  if(btn){ btn.classList.add("playing"); a.addEventListener("ended",()=>btn.classList.remove("playing")); a.addEventListener("pause",()=>btn.classList.remove("playing")); }
+  a.addEventListener("error", () => {
+    if(fallbackSrc && !fellBack){ fellBack = true; playFile(fallbackSrc, null, btn); }
+  });
+  const p = a.play();
+  if(p && p.catch) p.catch(() => { if(fallbackSrc && !fellBack){ fellBack = true; playFile(fallbackSrc, null, btn); } });
+}
+
+function segText(line){ return line.seg.map(s=>s.t).join("").trim(); }
+
+function renderReplay(item){
+  replayFullBtn.classList.remove("playing");
+  replayFullBtn.onclick = () => playFile(item.audio, null, replayFullBtn);
+  segList.innerHTML = "";
+  let rows = [];
+  if(item.part === 1){
+    rows = item.script.map((line, i) => ({
+      cls: line.sp === "M" ? "m" : "w",
+      label: line.sp === "M" ? "男" : "女",
+      text: segText(line),
+      file: `audio/${item.id}_s${i+1}.mp3`
+    }));
+    replaySub.textContent = "発話ごとに聞く（▶をタップ）";
+  } else {
+    const sents = P2_SENTENCES[item.id] || [];
+    rows = sents.map((t, i) => ({ cls:"n", label:String(i+1), text:t, file:`audio/${item.id}_s${i+1}.mp3` }));
+    replaySub.textContent = "一文ずつ聞く（▶をタップ）";
+  }
+  rows.forEach(r => {
+    const row = document.createElement("div");
+    row.className = "seg-row";
+    const pb = document.createElement("button");
+    pb.className = "seg-play";
+    pb.textContent = "▶";
+    pb.addEventListener("click", () => playFile(r.file, item.audio, pb));
+    const lb = document.createElement("span");
+    lb.className = "seg-lbl " + r.cls;
+    lb.textContent = r.label;
+    const tx = document.createElement("span");
+    tx.className = "seg-txt";
+    tx.textContent = r.text;
+    row.appendChild(pb); row.appendChild(lb); row.appendChild(tx);
+    segList.appendChild(row);
+  });
+}
+
+// ============ 進捗ドット ============
+function renderDots(){
+  dotsEl.innerHTML = "";
+  for(let i=0;i<SET.length;i++){
+    const d = document.createElement("div");
+    d.className = "dot" + (i===qIndex ? " cur" : "") + (results[i] ? (results[i].correct ? " hit" : " miss") : "");
+    dotsEl.appendChild(d);
+  }
+}
+
+// ============ 問題表示 ============
+function showQuestion(){
+  const item = SET[qIndex];
+  answered = false; audioPlayed = false;
+  qnumLabel.textContent = `第${qIndex+1}問 / ${SET.length}`;
+  scoreLabel.textContent = String(score);
+  sceneChip.textContent = item.scene;
+  qText.textContent = "";
+  qText.classList.add("hidden");
+  prereadHint.style.display = "";
+  choicesEl.innerHTML = "";
+  item.choices.forEach((c, i) => {
+    const b = document.createElement("button");
+    b.className = "choice";
+    b.textContent = `${i+1}. ${c}`;
+    b.disabled = true;
+    b.addEventListener("click", () => answer(i));
+    choicesEl.appendChild(b);
+  });
+  playBtn.disabled = false;
+  playBtn.textContent = "▶ 音声を再生（1回だけ）";
+  audioWarn.classList.remove("show");
+  timerArea.classList.add("hidden");
+  feedbackArea.classList.add("hidden");
+  renderDots();
+}
+
+function enableChoices(){
+  Array.from(choicesEl.children).forEach(b => { b.disabled = false; });
+}
+
+// ============ 音声 ============
+playBtn.addEventListener("click", () => {
+  if(audioPlayed) return;
+  const item = SET[qIndex];
+  playBtn.disabled = true;
+  playBtn.textContent = "🔊 再生中…（1回だけ・集中！）";
+  audioObj = new Audio(item.audio);
+  audioObj.addEventListener("ended", () => {
+    audioPlayed = true;
+    playBtn.textContent = "✔ 再生ずみ（英検本番も1回だけ）";
+    startTimer();
+  });
+  audioObj.addEventListener("error", audioFail);
+  const p = audioObj.play();
+  if(p && p.catch) p.catch(audioFail);
+});
+
+function audioFail(){
+  audioWarn.classList.add("show");
+  playBtn.textContent = "▶ 音声を再生（1回だけ）";
+  playBtn.disabled = false;
+}
+
+skipAudioBtn.addEventListener("click", () => {
+  audioPlayed = true;
+  audioWarn.classList.remove("show");
+  playBtn.disabled = true;
+  playBtn.textContent = "（音声なしモード）";
+  startTimer();
+});
+
+// ============ タイマー ============
+function startTimer(){
+  prereadHint.style.display = "none";
+  enableChoices();
+  timerArea.classList.remove("hidden");
+  let remain = 10.0;
+  timerBar.style.width = "100%";
+  timerText.textContent = "のこり 10 秒";
+  clearInterval(timerId);
+  timerId = setInterval(() => {
+    remain -= 0.1;
+    if(remain <= 0){
+      clearInterval(timerId);
+      timerBar.style.width = "0%";
+      timerText.textContent = "時間切れ！";
+      if(!answered) answer(-1);
+      return;
+    }
+    timerBar.style.width = (remain/10*100) + "%";
+    timerText.textContent = "のこり " + Math.ceil(remain) + " 秒";
+  }, 100);
+}
+
+// ============ 解答 ============
+function answer(sel){
+  if(answered) return;
+  answered = true;
+  clearInterval(timerId);
+  const item = SET[qIndex];
+  const correct = (sel === item.ans);
+  results[qIndex] = {correct: correct, sel: sel};
+  if(correct){
+    streak++;
+    const bonus = (streak >= 2) ? 50 : 0;
+    score += 100 + bonus;
+    feedbackLabel.textContent = bonus ? `⭕ 正解！ +100pt ＋連続ボーナス +${bonus}pt` : "⭕ 正解！ +100pt";
+    feedbackLabel.className = "feedback ok";
+  } else {
+    streak = 0;
+    feedbackLabel.textContent = (sel === -1) ? "⌛ 時間切れ…（本番は10秒以内にマーク！）" : "❌ ざんねん…";
+    feedbackLabel.className = "feedback ng";
+  }
+  scoreLabel.textContent = String(score);
+  Array.from(choicesEl.children).forEach((b, i) => {
+    b.disabled = true;
+    if(i === item.ans) b.classList.add(correct && i===sel ? "sel-ok" : "reveal-ok");
+    if(!correct && i === sel) b.classList.add("sel-ng");
+  });
+  qText.textContent = "🎧 設問：" + item.q;
+  qText.classList.remove("hidden");
+  explBox.innerHTML = `<div class="wana-title">🎣 ひっかけの正体</div>${item.wana}`;
+  toraBox.innerHTML = `<div class="tora-title">📜 虎の巻ポイント</div>${item.tora}`;
+  renderReplay(item);
+  renderHunter(item);
+  feedbackArea.classList.remove("hidden");
+  renderDots();
+  nextBtn.textContent = (qIndex === SET.length-1) ? "結果を見る" : "次の問題へ";
+  feedbackArea.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+// ============ サイン語ハンター ============
+let hunterTotal = 0, hunterFound = 0;
+function renderHunter(item){
+  scriptBox.innerHTML = "";
+  signNotes.innerHTML = "";
+  hunterTotal = 0; hunterFound = 0;
+  let signId = 0;
+  item.script.forEach(line => {
+    const div = document.createElement("div");
+    div.className = "script-line";
+    if(line.sp){
+      const chip = document.createElement("span");
+      chip.className = "spk " + (line.sp === "M" ? "m" : "w");
+      chip.textContent = (line.sp === "M" ? "男性" : "女性");
+      div.appendChild(chip);
+    }
+    line.seg.forEach(seg => {
+      if(seg.t === "") return;
+      const words = seg.t.split(/(\s+)/);
+      if(seg.sign){
+        const myId = "sign" + (signId++);
+        hunterTotal++;
+        const note = document.createElement("div");
+        note.className = "signnote";
+        note.id = "note-" + myId;
+        note.innerHTML = `<b class="k-${seg.sign.k}">${escapeHtml(seg.sign.label)}</b>：${seg.sign.note}`;
+        signNotes.appendChild(note);
+        words.forEach(wd => {
+          if(/^\s+$/.test(wd) || wd === ""){ div.appendChild(document.createTextNode(wd)); return; }
+          const sp = document.createElement("span");
+          sp.className = "w";
+          sp.dataset.sign = myId;
+          sp.dataset.kind = seg.sign.k;
+          sp.textContent = wd;
+          sp.addEventListener("click", onWordTap);
+          div.appendChild(sp);
+        });
+      } else {
+        words.forEach(wd => {
+          if(/^\s+$/.test(wd) || wd === ""){ div.appendChild(document.createTextNode(wd)); return; }
+          const sp = document.createElement("span");
+          sp.className = "w";
+          sp.textContent = wd;
+          sp.addEventListener("click", onWordTap);
+          div.appendChild(sp);
+        });
+      }
+    });
+    scriptBox.appendChild(div);
+  });
+  updateHunterStatus();
+  revealBtn.disabled = false;
+}
+
+function onWordTap(e){
+  const el = e.currentTarget;
+  const sid = el.dataset.sign;
+  if(sid){
+    revealSign(sid, true);
+  } else {
+    el.classList.add("miss-flash");
+    setTimeout(() => el.classList.remove("miss-flash"), 350);
+  }
+}
+
+function revealSign(sid, withPoint){
+  const note = document.getElementById("note-" + sid);
+  if(!note || note.classList.contains("shown")) return;
+  note.classList.add("shown");
+  const spans = scriptBox.querySelectorAll(`[data-sign="${sid}"]`);
+  spans.forEach(sp => { sp.classList.add("found-" + sp.dataset.kind); });
+  hunterFound++;
+  if(withPoint){ score += 20; scoreLabel.textContent = String(score); }
+  updateHunterStatus();
+}
+
+function updateHunterStatus(){
+  hunterStatus.textContent = `見つけたサイン語：${hunterFound} / ${hunterTotal}` + (hunterFound === hunterTotal && hunterTotal > 0 ? "　🎉 全部発見！" : "");
+  if(hunterFound === hunterTotal) revealBtn.disabled = true;
+}
+
+revealBtn.addEventListener("click", () => {
+  signNotes.querySelectorAll(".signnote").forEach(n => {
+    revealSign(n.id.replace("note-",""), false);
+  });
+});
+
+function escapeHtml(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// ============ パート選択・開始 ============
+document.querySelectorAll(".partbtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const p = btn.dataset.part;
+    SET = (p === "all") ? ITEMS.slice() : ITEMS.filter(x => x.part === Number(p));
+    qIndex = 0; score = 0; streak = 0; results.length = 0;
+    startView.classList.add("hidden");
+    resultView.classList.add("hidden");
+    quizView.classList.remove("hidden");
+    showQuestion();
+    window.scrollTo({top:0});
+  });
+});
+
+nextBtn.addEventListener("click", () => {
+  if(audioObj){ audioObj.pause(); audioObj = null; }
+  stopReplay();
+  if(qIndex === SET.length - 1){
+    showResult();
+  } else {
+    qIndex++;
+    showQuestion();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+});
+
+// ============ 結果 ============
+function showResult(){
+  quizView.classList.add("hidden");
+  resultView.classList.remove("hidden");
+  const correctCount = results.filter(r => r && r.correct).length;
+  const pct = Math.round(correctCount / SET.length * 100);
+  const scoreEl = document.getElementById("result-score");
+  const labelEl = document.getElementById("result-label");
+  scoreEl.textContent = String(score);
+  scoreEl.classList.remove("gold");
+  document.getElementById("result-detail").textContent = `正解 ${correctCount} / ${SET.length} 問（${pct}%）`;
+  setTimeout(() => { document.getElementById("passline-fill").style.width = pct + "%"; }, 100);
+
+  if(pct >= 90){
+    labelEl.textContent = "👑 S級合格！";
+    labelEl.className = "result-label sclass";
+    scoreEl.classList.add("gold");
+    confetti(true);
+  } else if(pct >= 70){
+    labelEl.textContent = "🎉 合格ライン突破！";
+    labelEl.className = "result-label pass";
+    confetti(false);
+  } else {
+    labelEl.textContent = "もうひといき！";
+    labelEl.className = "result-label fail";
+  }
+
+  const wrongEl = document.getElementById("wrong-review");
+  wrongEl.innerHTML = "";
+  const wrongs = SET.map((it, i) => ({it, r: results[i], i})).filter(x => !(x.r && x.r.correct));
+  if(wrongs.length){
+    const h = document.createElement("h3");
+    h.textContent = "📝 まちがえた問題のふりかえり";
+    wrongEl.appendChild(h);
+    wrongs.forEach(x => {
+      const d = document.createElement("div");
+      d.className = "wrong-item";
+      const yourAns = (x.r && x.r.sel >= 0) ? x.it.choices[x.r.sel] : "（時間切れ）";
+      d.innerHTML = `<b>第${x.i+1}問：${escapeHtml(x.it.q)}</b><br>あなたの答え：${escapeHtml(yourAns)}<br>正解：<b>${escapeHtml(x.it.choices[x.it.ans])}</b><br>${x.it.wana}`;
+      wrongEl.appendChild(d);
+    });
+  }
+}
+
+// ============ 紙吹雪 ============
+function confetti(gold){
+  const colors = gold ? ["#c9a227","#f7d000","#ffe98a","#fff"] : ["#2fbdea","#8dc63f","#f7d000","#ff8a8a","#b28aff"];
+  for(let i=0;i<80;i++){
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random()*100 + "vw";
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.animation = `fall ${2.2 + Math.random()*2}s linear ${Math.random()*1.2}s forwards`;
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 6000);
+  }
+}
+
+// ============ リトライ・ホーム ============
+document.getElementById("retry-btn").addEventListener("click", () => {
+  qIndex = 0; score = 0; streak = 0; results.length = 0;
+  document.getElementById("passline-fill").style.width = "0%";
+  resultView.classList.add("hidden");
+  quizView.classList.remove("hidden");
+  showQuestion();
+  window.scrollTo({top:0});
+});
+
+document.getElementById("home-btn").addEventListener("click", () => {
+  resultView.classList.add("hidden");
+  quizView.classList.add("hidden");
+  startView.classList.remove("hidden");
+  window.scrollTo({top:0});
+});
+</script>
+</body>
+</html>
