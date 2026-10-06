@@ -43,6 +43,8 @@ header .sub{font-size:12px; opacity:.85; margin-top:2px;}
 .choice.sel-ng{border-color:var(--ng); background:#fdeeec;}
 .choice.reveal-ok{border-color:var(--ok); background:#eafaf0;}
 .choice:disabled{cursor:default; opacity:.9;}
+.choice.giveup{border-style:dashed; border-color:#b9c7cf; color:#7b93a0; background:#f7fafb; font-weight:normal;}
+.choice.giveup:not(:disabled):active{border-color:#7b93a0;}
 .timerwrap{height:10px; background:#e3eef5; border-radius:999px; overflow:hidden; margin:12px 0 4px;}
 .timerbar{height:100%; width:100%; background:linear-gradient(90deg,var(--green),var(--yellow),var(--ng)); transition:width .1s linear;}
 .timertext{font-size:12px; color:#7b93a0; text-align:center; margin-bottom:6px;}
@@ -374,6 +376,12 @@ function showQuestion(){
     b.addEventListener("click", () => answer(i));
     choicesEl.appendChild(b);
   });
+  const gb = document.createElement("button");
+  gb.className = "choice giveup";
+  gb.textContent = "⑤ 解答を見る";
+  gb.disabled = true;
+  gb.addEventListener("click", () => answer(-2));
+  choicesEl.appendChild(gb);
   playBtn.disabled = false;
   playBtn.textContent = "▶ 音声を再生（1回だけ）";
   audioWarn.classList.remove("show");
@@ -456,7 +464,7 @@ function answer(sel){
     feedbackLabel.className = "feedback ok";
   } else {
     streak = 0;
-    feedbackLabel.textContent = (sel === -1) ? "⌛ 時間切れ…（本番は10秒以内にマーク！）" : "❌ ざんねん…";
+    feedbackLabel.textContent = (sel === -1) ? "⌛ 時間切れ…（本番は10秒以内にマーク！）" : (sel === -2) ? "👀 解答を見ました" : "❌ ざんねん…";
     feedbackLabel.className = "feedback ng";
   }
   scoreLabel.textContent = String(score);
