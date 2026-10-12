@@ -102,6 +102,11 @@ header .sub{font-size:12px; opacity:.85; margin-top:2px;}
 .wrong-review{margin-top:14px;}
 .wrong-review h3{font-size:14.5px; margin-bottom:8px; color:var(--ng);}
 .wrong-item{background:#fdf6f5; border-radius:10px; padding:10px 12px; font-size:12.5px; margin-bottom:8px; line-height:1.65;}
+.picker-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:16px;}
+.pickbtn{padding:12px 0; border:2px solid #dfeef5; border-radius:10px; background:#fff; font-size:14px; font-weight:bold; cursor:pointer; color:var(--ink);}
+.pickbtn:active{border-color:var(--sky); background:#eef7fc;}
+.picker-hint{font-size:12.5px; color:#7b93a0; margin-bottom:10px; line-height:1.6;}
+.wrongflow-hint{font-size:12.5px; color:#7a8a93; text-align:center; margin-top:6px;}
 footer{text-align:center; font-size:11px; color:#9ab0bc; padding:14px 16px 30px; line-height:1.7;}
 .hidden{display:none;}
 .confetti{position:fixed; top:-16px; width:10px; height:14px; z-index:999; pointer-events:none;}
@@ -132,9 +137,30 @@ footer{text-align:center; font-size:11px; color:#9ab0bc; padding:14px 16px 30px;
       流れ：<b>選択肢を先読み → 音声を再生（1回だけ）→ 10秒以内に解答 → 解説で「サイン語ハンター」</b>に挑戦。<br>
       やりたいパートを選んでスタート！
     </p>
-    <button class="btn partbtn" data-part="1">第1部（No.1〜15）を解く<small>対話問題・音の連結／脱落フォーカス</small></button>
-    <button class="btn partbtn p2" data-part="2">第2部（No.16〜30）を解く<small>説明文・場面／時間の切り替えフォーカス（いろいろな声）</small></button>
-    <button class="btn partbtn all" data-part="all">全30問を通しで解く<small>本番と同じボリューム</small></button>
+    <button class="btn partbtn" data-part="1">第1部（No.1〜15）を解く<small>対話問題・音の連結／脱落フォーカス／問題を選んで復習もOK</small></button>
+    <button class="btn partbtn p2" data-part="2">第2部（No.16〜30）を解く<small>説明文・場面／時間の切り替えフォーカス／問題を選んで復習もOK</small></button>
+    <button class="btn partbtn all" data-part="all">全30問を通しで解く<small>解説なし・本番と同じ採点のみの実践モード</small></button>
+  </div>
+
+  <!-- パート内・問題ピッカー画面 -->
+  <div class="hidden" id="picker-view">
+    <div class="card">
+      <div style="font-weight:bold; font-size:17px; margin-bottom:10px;" id="picker-title"></div>
+      <button class="btn green" id="picker-all-btn" style="margin-bottom:16px;">この15問を順番に解く（学習モード）</button>
+      <div class="picker-hint">または、復習したい問題番号をタップ（1問だけじっくり練習できます）</div>
+      <div class="picker-grid" id="picker-grid"></div>
+      <button class="btn ghost" id="picker-back-btn">← パート選択に戻る</button>
+    </div>
+  </div>
+
+  <!-- 全体の再聞き直し画面（学習モードの最後） -->
+  <div class="hidden" id="replay-all-view">
+    <div class="card">
+      <div style="font-weight:bold; font-size:17px; margin-bottom:10px;">🎧 最後に、全体をもう一度聞いてみよう</div>
+      <p style="font-size:13px; color:#5a7484; line-height:1.75; margin-bottom:16px;">今やったパートをもう一度通しで聞いて、聞き取れるようになったか確認しよう。</p>
+      <button class="playbtn" id="replay-all-play-btn" style="margin-bottom:16px;">▶ 通しでもう一度再生</button>
+      <button class="btn green" id="replay-all-done-btn">結果を見る</button>
+    </div>
   </div>
 
   <!-- 問題画面 -->
@@ -260,12 +286,27 @@ const P2_SENTENCES = {
 // ============ 状態 ============
 let SET = [];
 let qIndex = 0, score = 0, streak = 0, answered = false, timerId = null, audioObj = null, audioPlayed = false;
+let mode = "all"; // "all"=実践モード(解説なし) / "part"=パート学習モード / "single"=1問だけ復習モード
+let pendingPart = null;
+let wrongStep = 0; // 0=通常 / 1〜4=間違えた問題のじっくり確認フロー
+let hunterInteracted = false, segPlayed = false;
+let seqAudio = null;
 const results = [];
 
 // ============ 要素 ============
 const startView = document.getElementById("start-view");
+const pickerView = document.getElementById("picker-view");
+const pickerTitle = document.getElementById("picker-title");
+const pickerGrid = document.getElementById("picker-grid");
+const pickerAllBtn = document.getElementById("picker-all-btn");
+const pickerBackBtn = document.getElementById("picker-back-btn");
+const replayAllView = document.getElementById("replay-all-view");
+const replayAllPlayBtn = document.getElementById("replay-all-play-btn");
+const replayAllDoneBtn = document.getElementById("replay-all-done-btn");
 const quizView = document.getElementById("quiz-view");
 const resultView = document.getElementById("result-view");
+const hunterArea = document.getElementById("hunter-area");
+const replayArea = document.getElementById("replay-area");
 const dotsEl = document.getElementById("dots");
 const qnumLabel = document.getElementById("qnum-label");
 const scoreLabel = document.getElementById("score-label");
@@ -296,6 +337,8 @@ const segList = document.getElementById("seg-list");
 let replayAudio = null;
 function stopReplay(){ if(replayAudio){ replayAudio.pause(); replayAudio = null; } }
 function playFile(src, fallbackSrc, btn){
+  segPlayed = true;
+  if(wrongStep >= 2) updateWrongFlowUI();
   stopReplay();
   document.querySelectorAll(".seg-play.playing, .replay-full.playing").forEach(b=>b.classList.remove("playing"));
   let fellBack = false;
@@ -323,11 +366,11 @@ function renderReplay(item){
       text: segText(line),
       file: `audio/${item.id}_s${i+1}.mp3`
     }));
-    replaySub.textContent = "発話ごとに聞く（▶をタップ）";
+    replaySub.textContent = "発話ごとに聞く（▶をタップ）→ 聞こえた通りに声に出して真似しよう（シャドーイング）";
   } else {
     const sents = P2_SENTENCES[item.id] || [];
     rows = sents.map((t, i) => ({ cls:"n", label:String(i+1), text:t, file:`audio/${item.id}_s${i+1}.mp3` }));
-    replaySub.textContent = "一文ずつ聞く（▶をタップ）";
+    replaySub.textContent = "一文ずつ聞く（▶をタップ）→ 聞こえた通りに声に出して真似しよう（シャドーイング）";
   }
   rows.forEach(r => {
     const row = document.createElement("div");
@@ -349,6 +392,7 @@ function renderReplay(item){
 
 // ============ 進捗ドット ============
 function renderDots(){
+  dotsEl.style.display = SET.length <= 1 ? "none" : "flex";
   dotsEl.innerHTML = "";
   for(let i=0;i<SET.length;i++){
     const d = document.createElement("div");
@@ -361,7 +405,12 @@ function renderDots(){
 function showQuestion(){
   const item = SET[qIndex];
   answered = false; audioPlayed = false;
-  qnumLabel.textContent = `第${qIndex+1}問 / ${SET.length}`;
+  wrongStep = 0; hunterInteracted = false; segPlayed = false;
+  if(mode === "single"){
+    qnumLabel.textContent = `第${ITEMS.indexOf(item)+1}問（復習モード）`;
+  } else {
+    qnumLabel.textContent = `第${qIndex+1}問 / ${SET.length}`;
+  }
   scoreLabel.textContent = String(score);
   sceneChip.textContent = item.scene;
   qText.textContent = "";
@@ -376,12 +425,14 @@ function showQuestion(){
     b.addEventListener("click", () => answer(i));
     choicesEl.appendChild(b);
   });
-  const gb = document.createElement("button");
-  gb.className = "choice giveup";
-  gb.textContent = "⑤ 解答を見る";
-  gb.disabled = true;
-  gb.addEventListener("click", () => answer(-2));
-  choicesEl.appendChild(gb);
+  if(mode !== "all"){
+    const gb = document.createElement("button");
+    gb.className = "choice giveup";
+    gb.textContent = "⑤ 解答を見る";
+    gb.disabled = true;
+    gb.addEventListener("click", () => answer(-2));
+    choicesEl.appendChild(gb);
+  }
   playBtn.disabled = false;
   playBtn.textContent = "▶ 音声を再生（1回だけ）";
   audioWarn.classList.remove("show");
@@ -481,8 +532,75 @@ function answer(sel){
   renderHunter(item);
   feedbackArea.classList.remove("hidden");
   renderDots();
-  nextBtn.textContent = (qIndex === SET.length-1) ? "結果を見る" : "次の問題へ";
+
+  const isLast = (qIndex === SET.length - 1);
+
+  if(mode === "all"){
+    // 実践モード：解説を入れず、採点のみ。すぐ次へ。
+    hunterArea.classList.add("hidden");
+    replayArea.classList.add("hidden");
+    explBox.classList.add("hidden");
+    toraBox.classList.add("hidden");
+    nextBtn.disabled = false;
+    nextBtn.textContent = isLast ? "結果を見る" : "次の問題へ";
+    nextBtn.onclick = goNext;
+  } else if(correct){
+    // 学習モード・正解：さらっと次へ進む
+    hunterArea.classList.add("hidden");
+    replayArea.classList.add("hidden");
+    explBox.classList.add("hidden");
+    toraBox.classList.add("hidden");
+    nextBtn.disabled = false;
+    nextBtn.textContent = isLast ? (mode === "single" ? "問題選択にもどる" : "結果を見る") : "次の問題へ";
+    nextBtn.onclick = goNext;
+  } else {
+    // 学習モード・不正解：単語確認→聞き直し・シャドーイング→ひっかけの確認、の順にじっくり進める
+    wrongStep = 1;
+    updateWrongFlowUI();
+  }
+
   feedbackArea.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+// ============ 間違えた問題のじっくり確認フロー ============
+function updateWrongFlowUI(){
+  const isLast = (qIndex === SET.length - 1);
+  hunterArea.classList.toggle("hidden", wrongStep < 2);
+  replayArea.classList.toggle("hidden", wrongStep < 3);
+  explBox.classList.toggle("hidden", wrongStep < 4);
+  toraBox.classList.toggle("hidden", wrongStep < 4);
+
+  if(wrongStep === 1){
+    nextBtn.disabled = false;
+    nextBtn.textContent = "👉 単語・キーフレーズを確認する";
+    nextBtn.onclick = () => {
+      wrongStep = 2;
+      updateWrongFlowUI();
+      hunterArea.scrollIntoView({behavior:"smooth", block:"start"});
+    };
+  } else if(wrongStep === 2){
+    nextBtn.disabled = !hunterInteracted;
+    nextBtn.textContent = hunterInteracted ? "👉 聞き直し・シャドーイングへ" : "☝️ スクリプトの単語をタップしてから進もう";
+    nextBtn.onclick = () => {
+      if(!hunterInteracted) return;
+      wrongStep = 3;
+      updateWrongFlowUI();
+      replayArea.scrollIntoView({behavior:"smooth", block:"start"});
+    };
+  } else if(wrongStep === 3){
+    nextBtn.disabled = !segPlayed;
+    nextBtn.textContent = segPlayed ? "👉 ひっかけの正体を確認する" : "☝️ 🔁再生ボタンを1つ押してから進もう";
+    nextBtn.onclick = () => {
+      if(!segPlayed) return;
+      wrongStep = 4;
+      updateWrongFlowUI();
+      explBox.scrollIntoView({behavior:"smooth", block:"start"});
+    };
+  } else {
+    nextBtn.disabled = false;
+    nextBtn.textContent = isLast ? (mode === "single" ? "問題選択にもどる" : "結果を見る") : "次の問題へ";
+    nextBtn.onclick = () => { wrongStep = 0; goNext(); };
+  }
 }
 
 // ============ サイン語ハンター ============
@@ -558,6 +676,8 @@ function revealSign(sid, withPoint){
   spans.forEach(sp => { sp.classList.add("found-" + sp.dataset.kind); });
   hunterFound++;
   if(withPoint){ score += 20; scoreLabel.textContent = String(score); }
+  hunterInteracted = true;
+  if(wrongStep === 2) updateWrongFlowUI();
   updateHunterStatus();
 }
 
@@ -577,30 +697,109 @@ function escapeHtml(s){
 }
 
 // ============ パート選択・開始 ============
+function hideAllViews(){
+  startView.classList.add("hidden");
+  pickerView.classList.add("hidden");
+  quizView.classList.add("hidden");
+  replayAllView.classList.add("hidden");
+  resultView.classList.add("hidden");
+}
+
+function startSet(newMode, set){
+  mode = newMode;
+  SET = set;
+  qIndex = 0; score = 0; streak = 0; results.length = 0;
+  hideAllViews();
+  quizView.classList.remove("hidden");
+  showQuestion();
+  window.scrollTo({top:0});
+}
+
 document.querySelectorAll(".partbtn").forEach(btn => {
   btn.addEventListener("click", () => {
     const p = btn.dataset.part;
-    SET = (p === "all") ? ITEMS.slice() : ITEMS.filter(x => x.part === Number(p));
-    qIndex = 0; score = 0; streak = 0; results.length = 0;
-    startView.classList.add("hidden");
-    resultView.classList.add("hidden");
-    quizView.classList.remove("hidden");
-    showQuestion();
-    window.scrollTo({top:0});
+    if(p === "all"){
+      startSet("all", ITEMS.slice());
+    } else {
+      showPicker(Number(p));
+    }
   });
 });
 
-nextBtn.addEventListener("click", () => {
+// ============ パート内・問題ピッカー（学習モード） ============
+function showPicker(part){
+  pendingPart = part;
+  const list = ITEMS.filter(x => x.part === part);
+  pickerTitle.textContent = (part === 1 ? "第1部（No.1〜15）" : "第2部（No.16〜30）") + " ― どの問題にする？";
+  pickerGrid.innerHTML = "";
+  list.forEach((item, i) => {
+    const b = document.createElement("button");
+    b.className = "pickbtn";
+    b.textContent = String(ITEMS.indexOf(item) + 1);
+    b.addEventListener("click", () => startSet("single", [item]));
+    pickerGrid.appendChild(b);
+  });
+  hideAllViews();
+  pickerView.classList.remove("hidden");
+  window.scrollTo({top:0});
+}
+
+pickerAllBtn.addEventListener("click", () => {
+  startSet("part", ITEMS.filter(x => x.part === pendingPart));
+});
+
+pickerBackBtn.addEventListener("click", () => {
+  hideAllViews();
+  startView.classList.remove("hidden");
+});
+
+// ============ 次の問題へ ============
+function goNext(){
   if(audioObj){ audioObj.pause(); audioObj = null; }
   stopReplay();
-  if(qIndex === SET.length - 1){
-    showResult();
+  const isLast = (qIndex === SET.length - 1);
+  if(isLast){
+    if(mode === "single"){
+      quizView.classList.add("hidden");
+      showPicker(pendingPart);
+    } else if(mode === "part"){
+      showReplayAllInterstitial();
+    } else {
+      showResult();
+    }
   } else {
     qIndex++;
     showQuestion();
     window.scrollTo({top:0, behavior:"smooth"});
   }
+}
+
+// ============ 学習モードの最後：全体をもう一度聞く ============
+function stopSeq(){ if(seqAudio){ seqAudio.pause(); seqAudio = null; } }
+function playSeq(files, idx){
+  if(idx >= files.length){ replayAllPlayBtn.textContent = "▶ 通しでもう一度再生"; return; }
+  const a = new Audio(files[idx]);
+  seqAudio = a;
+  replayAllPlayBtn.textContent = `🔊 再生中…（${idx+1}/${files.length}）`;
+  a.addEventListener("ended", () => playSeq(files, idx + 1));
+  const p = a.play();
+  if(p && p.catch) p.catch(() => playSeq(files, idx + 1));
+}
+replayAllPlayBtn.addEventListener("click", () => {
+  stopSeq();
+  playSeq(SET.map(it => it.audio), 0);
 });
+replayAllDoneBtn.addEventListener("click", () => {
+  stopSeq();
+  replayAllView.classList.add("hidden");
+  showResult();
+});
+function showReplayAllInterstitial(){
+  quizView.classList.add("hidden");
+  replayAllPlayBtn.textContent = "▶ 通しでもう一度再生";
+  replayAllView.classList.remove("hidden");
+  window.scrollTo({top:0});
+}
 
 // ============ 結果 ============
 function showResult(){
@@ -672,8 +871,7 @@ document.getElementById("retry-btn").addEventListener("click", () => {
 });
 
 document.getElementById("home-btn").addEventListener("click", () => {
-  resultView.classList.add("hidden");
-  quizView.classList.add("hidden");
+  hideAllViews();
   startView.classList.remove("hidden");
   window.scrollTo({top:0});
 });
